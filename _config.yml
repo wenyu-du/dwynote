@@ -82,9 +82,9 @@ navs:
     mobile-hidden: true
 
   -
-    href: /open-source/
-    label: 开源
-    mobile-hidden: true
+    # href: /open-source/
+    # label: 开源
+    # mobile-hidden: true
 
   -
     href: /fragments/
