@@ -1,0 +1,465 @@
+
+**目录**
+
+1. [介绍](#%E4%BB%8B%E7%BB%8D)
+	1. [isaac sim仿真软件](#isaac%20sim%E4%BB%BF%E7%9C%9F%E8%BD%AF%E4%BB%B6)
+		1. [软件介绍](#%E8%BD%AF%E4%BB%B6%E4%BB%8B%E7%BB%8D)
+		2. [Isaac Sim 支持三大核心工作流程：](#Isaac%20Sim%20%E6%94%AF%E6%8C%81%E4%B8%89%E5%A4%A7%E6%A0%B8%E5%BF%83%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%9A)
+		3. [对比其他仿真软件](#%E5%AF%B9%E6%AF%94%E5%85%B6%E4%BB%96%E4%BB%BF%E7%9C%9F%E8%BD%AF%E4%BB%B6)
+		4. [PhysX物理引擎设置](#PhysX%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E%E8%AE%BE%E7%BD%AE)
+	2. [isaac lab架构](#isaac%20lab%E6%9E%B6%E6%9E%84)
+		1. [直接架构 Direct Based](#%E7%9B%B4%E6%8E%A5%E6%9E%B6%E6%9E%84%20Direct%20Based)
+		2. [基于管理的架构：Manager Based](#%E5%9F%BA%E4%BA%8E%E7%AE%A1%E7%90%86%E7%9A%84%E6%9E%B6%E6%9E%84%EF%BC%9AManager%20Based)
+		3. [实际应用](#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8)
+2. [安装与配置](#%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE)
+		1. [二进制安装isaac sim](#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85isaac%20sim)
+		2. [isaac lab 安装](#isaac%20lab%20%E5%AE%89%E8%A3%85)
+3. [任务配置](#%E4%BB%BB%E5%8A%A1%E9%85%8D%E7%BD%AE)
+	1. [零件格式跨平台转换](#%E9%9B%B6%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%BD%AC%E6%8D%A2)
+	2. [场景设置，isaac lab教程](#%E5%9C%BA%E6%99%AF%E8%AE%BE%E7%BD%AE%EF%BC%8Cisaac%20lab%E6%95%99%E7%A8%8B)
+		1. [01_robot](#01_robot)
+		2. [02_scene - 场景（Scene）的构建](#02_scene%20-%20%E5%9C%BA%E6%99%AF%EF%BC%88Scene%EF%BC%89%E7%9A%84%E6%9E%84%E5%BB%BA)
+		3. [03_envs - 强化学习环境（Environments）](#03_envs%20-%20%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%EF%BC%88Environments%EF%BC%89)
+		4. [04_sensors - 传感器（Sensors）](#04_sensors%20-%20%E4%BC%A0%E6%84%9F%E5%99%A8%EF%BC%88Sensors%EF%BC%89)
+		5. [05_controllers - 控制器（Controllers）](#05_controllers%20-%20%E6%8E%A7%E5%88%B6%E5%99%A8%EF%BC%88Controllers%EF%BC%89)
+4. [创建新的isaac lab direct任务](#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84isaac%20lab%20direct%E4%BB%BB%E5%8A%A1)
+	1. [环境创建](#%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA)
+	2. [注册环境](#%E6%B3%A8%E5%86%8C%E7%8E%AF%E5%A2%83)
+	3. [RL训练](#RL%E8%AE%AD%E7%BB%83)
+5. [排坑指南](#%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97)
+	1. [isaac lab安装踩坑](#isaac%20lab%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91)
+	2. [05_tutorial 中的IK控制器排坑](#05_tutorial%20%E4%B8%AD%E7%9A%84IK%E6%8E%A7%E5%88%B6%E5%99%A8%E6%8E%92%E5%9D%91)
+6. [其他实用操作](#%E5%85%B6%E4%BB%96%E5%AE%9E%E7%94%A8%E6%93%8D%E4%BD%9C)
+	1. [blender软件基本操作](#blender%E8%BD%AF%E4%BB%B6%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C)
+	2. [搭建自己的 Nucleus 服务器 -- 后续安排](#%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%20Nucleus%20%E6%9C%8D%E5%8A%A1%E5%99%A8%20--%20%E5%90%8E%E7%BB%AD%E5%AE%89%E6%8E%92)
+	3. [在仿真环境中添加机械臂夹爪](#%E5%9C%A8%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E6%B7%BB%E5%8A%A0%E6%9C%BA%E6%A2%B0%E8%87%82%E5%A4%B9%E7%88%AA)
+	4. [通过UI界面搭建自己的isaac sim环境](#%E9%80%9A%E8%BF%87UI%E7%95%8C%E9%9D%A2%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84isaac%20sim%E7%8E%AF%E5%A2%83)
+
+
+
+## 介绍
+### isaac sim仿真软件
+
+#### 软件介绍
+
+[官方介绍链接](https://developer.nvidia.com/isaac/sim)
+isaac sim是英伟达开发的一款仿真软件，在强化学习领域，与isaac lab训练框架深度绑定，模拟真实世界里的机械臂，传感器，物理元素。此外支持机器人运动学和动力学控制器以及仿真，为rl训练提供数据。
+
+#### Isaac Sim 支持三大核心工作流程：
+1. 为机器人基础模型的训练与微调生成合成数据
+2. 对机器人技术栈进行软件在环测试
+3. 通过 Isaac™ Lab 实现机器人学习
+![[images/note/image-16.png]]
+
+
+#### 对比其他仿真软件
+1. mujoco适合高精度场景，由google deepmind开发，常用于学术界快速验证算法效果的场景。
+2. isaac sim依赖omniverse生态，基于PhsX物理引擎，与isaaclab融合可以发挥高效率并行训练的优势
+3. coppeliasim，支持多种物理引擎如bullet，mujoco等。
+#### PhysX物理引擎设置
+[物理引擎配置教程](https://docs.omniverse.nvidia.com/kit/docs/omni_physics/106.5/extensions/ux/source/omni.physx.ui/docs/dev_guide/sim_management.html)
+
+
+### isaac lab架构
+基于isaac lab框架与isaac sim进行rl交互训练的框架有以下两种
+
+#### 直接架构 Direct Based 
+不需要经过管理器进行配置，编程灵活，但是可拓展性差，适合快速验证算法的场景
+![[images/note/image-8.png]]
+#### 基于管理的架构：Manager Based 
+包含以下组件：
+- ManagerBasedEnv: 基础环境类
+- ManagerBasedRLEnv：强化学习环境类
+**核心组件**
+- ObservationManager
+- ActionManager
+- EventManager
+- RecorderManager
+通过统一的管理器对isaac lab框架下的强化学习各个模块进行配置，满足工业级开发需求，模块进行标准化统一管理，可拓展性强。
+![[images/note/image-4.png]]
+
+#### 实际应用
+例如Ant任务有两个版本：
+
+- `Isaac-Ant-v0`: Manager Based工作流
+- `Isaac-Ant-Direct-v0`: Direct工作流
+
+## 安装与配置
+安装方式的区别
+isaac sim 安装方式一般有二进制安装和pip安装，区别是二进制安装的方案支持vscode插件
+isaac lab安装有源码安装和pip安装，其中通过源码安装包含全部的推理训练脚本
+所以推荐二进制安装isaac sim，源码安装isaac lab
+
+#### 二进制安装isaac sim
+isaac sim的安装方式有两种，通过pip安装和二进制的安装。两者的区别是:二进制安装的方式支持vscode拓展
+[拓展配置](https://docs.robotsfan.com/isaaclab/source/overview/developer-guide/vs_code.html#setup-vs-code)
+[isaac sim vscode edition 拓展操作](https://docs.isaacsim.omniverse.nvidia.com/4.5.0/development_tools/vscode.html)
+考虑到后续开发需求，推荐二进制的方式安装
+**isaac sim 安装方法**
+https://docs.robotsfan.com/isaaclab/source/setup/installation/binaries_installation.html#isaaclab-binaries-installation
+#### isaac lab 安装
+**安装方法**
+https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html#local-installation
+1. 在isaac lab中添加isaac-sim链接
+ln -s /isaac-sim /home/bjae/project/IsaacLab/_isaac_sim
+2. 在conda环境中执行 source ~/isaac-sim/setup_conda_env.sh
+3. 踩坑debug[[isaac仿真与训练_操作文档#^0fe9ee]] 
+
+## 任务配置
+### 零件格式跨平台转换
+
+
+ isaac sim需要的文件格式是usd(universal scene descriiption)。其他格式的文件导入isaac sim需要经过文件格式的转化或编辑。
+1. 机械臂urdf 文件导入：机械臂urdf 文件可以直接通过isaac sim中导入文件模块自动保存并生成usd文件
+	对于单个机械臂，导入时可以指定关节的刚度和阻尼，方法是邮件文件，打开。
+![[images/note/image-13.png]]
+2. stl文件；通过solidworks或者其他三维绘图软件生成的stl文件格式，也可以导入到isaac sim中，但是导入后生成的usd格式文件不具备mesh属性，所以无法做材质纹理渲染。而大部分rl框架下的训练中，image属性的observation是一个很重要的输入观测，所以环境的材质纹理同样不能忽视。解决方案如下
+	1. 生成stl文件，**注意，生成的stl文件一定是米为单位，** isaac sim中默认单位是m，如果导入mm单位的零件，会因为零件太大而无法显示。
+	2. 使用blender软件，将stl文件转换成带有mesh的bfx文件。
+	3. 在isaac sim中导入xbf文件，然后再isaac sim中为零件添加材料属性
+	4. 辑对应零件的材质颜色，并且保存为usd格式文件
+### 场景设置，isaac lab教程
+
+
+isaac tutorial代码库说明，下面内容是对isaac sim中tutorials部分的讲解，参考下方链接代码库：
+https://github.com/isaac-sim/IsaacLab/tree/main/scripts/tutorials
+代码中的教程isaaclab
+```bash
+cd ~/project/Isaaclab/scripts/tutorials
+```
+#### 01_robot 
+- 与usd文件配置的接口，配置stiffness，damping, 驱动关节joint，init state。
+- 列出所有的已经注册的环境：list_envs.py 脚本来查看新注册的环境 Template-Air-v0。
+* add_new_robot.py: 演示如何在一个环境中同时添加并控制两个不同的机器人（Jetbot 和 Dofbot）。
+* run_articulation.py:核心内容是加载一个“关节式”资源（Articulation），以经典的“车杆”（Cartpole）模型为例，展示了如何与之交互，包括读取其状态和施加随机力。
+* run_custom_robot.py: 提供了一个模板，指导你如何导入并运行一个自定义的机器人模型。你需要修改此文件以加载你自己的机器人配置。
+* run_deformable_object.py: 演示如何创建和操作“可变形体”（DeformableObject），例如一个可以被外力改变形状的立方体。
+* run_rigid_object.py: 演示如何创建和操作“刚体”（RigidObject），例如一个圆锥体，并随机化其初始位置。
+#### 02_scene - 场景（Scene）的构建
+这个目录展示了如何使用 InteractiveScene 接口来系统地构建一个包含多个环境实例的复杂场景。
+* create_scene.py: 通过定义一个场景配置类（CartpoleSceneCfg），将地面、光源和多个“车杆”机器人组合在一起，并支持并行生成多个环境（num_env
+s）。这比手动创建每个实体更具扩展性。
+
+在 02_scene 教程中，完整的控制流程是：
+
+1. 生成随机力矩：`efforts = torch.randn_like(robot.data.joint_pos) * 5.0`
+2. 设置力矩目标：`robot.set_joint_effort_target(efforts)`
+3. 写入仿真：`scene.write_data_to_sim()` create_scene.py:101
+
+第三步通过执行器模型处理力矩命令并将其应用到 PhysX 仿真中： articulation.py:1451-1488
+
+---
+**代码部分**
+```python
+efforts = torch.randn_like(robot.data.joint_pos) * 5.0
+robot.set_joint_effort_target(efforts)
+```
+
+- `torch.randn_like(robot.data.joint_pos)` 创建一个与 `robot.data.joint_pos` 形状相同的张量，填充标准正态分布的随机数
+- `robot.data.joint_pos` 是机器人当前的关节位置，形状为 `(num_envs, num_joints)` articulation_data.py:252-266
+- 乘以 `5.0` 将随机数缩放到合适的力矩范围
+
+- 这行代码将生成的力矩目标设置到机器人的内部缓冲区中： create_scene.py:99
+- `set_joint_effort_target` 方法的实现如下： articulation.py:938-960
+- 该方法将力矩目标存储在 `self._data.joint_effort_target` 缓冲区中，但不会立即应用到仿真。 articulation_data.py:260-266
+#### 03_envs - 强化学习环境（Environments）
+这个目录下的脚本是进阶内容，演示了如何构建用于强化学习（RL）的标准化环境。
+* create_cartpole_base_env.py: 基于 ManagerBasedEnv
+创建了一个“车杆”环境，其中包含了动作（Actions）、观察（Observations）和事件（Events）的完整定义。
+* create_cube_base_env.py: 创建了一个控制浮动立方体的环境，并演示了如何定义一个自定义的动作项（CubeActionTerm）来实现PD控制器。
+* create_quadruped_base_env.py:
+创建了一个更复杂的四足机器人环境，其中包含了地形生成、高度扫描传感器并加载了一个预训练的神经网络策略来控制机器人行走。
+* policy_inference_in_usd.py: 演示了如何在从USD文件加载的现成场景（例如一个仓库）中，对一个预训练好的策略进行推理，以控制H1机器人。
+* run_cartpole_rl_env.py: 将“车杆”环境封装成一个与主流RL库（如 Stable Baselines3）兼容的 ManagerBasedRLEnv
+环境，包含了奖励（reward）、终止（terminated）等RL要素。
+#### 04_sensors - 传感器（Sensors）
+这个目录下的脚本专注于如何在机器人或场景中添加和使用各种传感器。
+* add_sensors_on_robot.py: 在一个四足机器人上集成了多种传感器，包括摄像头（Camera）、高度扫描仪（RayCaster）和接触传感器（ContactSensor
+），并展示了如何读取它们的输出数据。
+* run_frame_transformer.py: 演示了 FrameTransformer 的用法，它可以用来获取场景中任意坐标系（frame）之间的相对位置和姿态。
+* run_ray_caster.py: 演示了 RayCaster（射线投射器）的基本用法，它可以用来模拟激光雷达等传感器，检测与场景中物体的碰撞点。
+* run_ray_caster_camera.py: 演示了基于 RayCaster 实现的相机，它通过在Warp核心中进行射线投射来高效地生成深度图和法线图。
+* run_usd_camera.py: 演示了标准的、基于Omniverse Replicator API的USD相机，并展示了如何获取RGB图像、深度图、分割图等多种数据。
+#### 05_controllers - 控制器（Controllers）
+这个目录下的脚本展示了 Isaac Lab 中内置的高级机器人控制器。
+* run_diff_ik.py: 演示了“微分逆运动学”（Differential Inverse
+Kinematics）控制器，它可以通过计算雅可比矩阵来控制机械臂的末端执行器（end-effector）到达目标姿态。
+* run_osc.py: 演示了“操作空间控制”（Operational Space
+Control），这是一种更高级的控制器，它不仅考虑运动学，还考虑动力学（如质量矩阵），可以实现更精确的力控和运动控制。
+
+
+## 创建新的isaac lab direct任务
+
+```bash
+# 通过isaac lab注册新任务
+# 执行后可以按步骤选择注册任务的配置
+./isaaclab.sh --new 
+# 安装项目
+python -m pip install -e source/new_task
+```
+### 环境创建
+在对应的层级目录下，创建任务文件夹 air4a, 如果基于Direct框架做训练，则在direct目录下创建。
+在环境目录air4a创建对应的env.py, init.py, agent.py 文件
+
+![[Pasted image 20250829101750.png|任务层级目录|425x305]]
+### 注册环境
+在对应的层级目录下的 '_init_.py'文件中,通过gym.register()函数注册该环境
+
+```python
+import gymnasium as gym
+
+from . import agents
+from .air4a_env import Air4aEnv, Air4aEnvCfg
+
+__all__ = ["Air4aEnv", "Air4aEnvCfg"]
+
+gym.register(
+    id="Isaac-Air4a-Direct-v0",
+    entry_point="isaaclab_tasks.direct.air4a:Air4aEnv",  # air4a是对应的层级目录
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": "isaaclab_tasks.direct.air4a.air4a_env:Air4aEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:Air4aPPORunnerCfg",
+    },
+)
+```
+![[images/note/image-3.png|1228x82]]
+
+### RL训练
+**rls_rl** 库框架下的训练
+```bash
+./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-Air4a-Direct-v0 --num_envs=128
+```
+
+train.py 脚本充当了 Isaac Lab 中 RSL-RL 训练的总指挥。它负责：
+* 启动和管理 Isaac Sim 模拟器。
+* 根据用户输入加载和配置特定的任务和智能体。
+* 将 Isaac Lab 环境适配到 RSL-RL 库: 通过`RslRlVecEnvWrapper`环境包装器实现
+* 初始化 RSL-RL 的训练运行器。
+* 管理整个训练循环，包括日志记录、检查点保存和视频录制。
+
+具体实现
+1. 动态加载task 和 agent
+2. 环境创建
+	* gym.make(args_cli.task, cfg=env_cfg, render_mode=...) 使用 Gymnasium 的 make 函数创建 Isaac Lab 环境实例。render_mode 会根据是否录制视频进行设置。
+	* 如果环境是多智能体 RL 环境 (DirectMARLEnv)，它会通过 multi_agent_to_single_agent(env) 函数将其转换为单智能体实例，以便与 RSL-RL 兼容。
+3. RSL-RL 环境包装器 (`RslRlVecEnvWrapper`)： 这是一个非常关键的步骤。env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions) 将 Isaac Lab 环境包装起来，使其适配 RSL-RL 库的 VecEnv 接口。这使得 Isaac Lab 环境能够与 RSL-RL 的 OnPolicyRunner 无缝协作。
+
+
+
+## 排坑指南
+1. 零件导入：1. 单位[[blender_stl_isaacsim]]，2. mesh纹理
+2. 通过python运行找不到模块：代码层面，先打开isaac sim[[29-08 注册isaac env#^5ff74e]]
+3. 物理引擎参数
+### isaac lab安装踩坑
+
+^0fe9ee
+
+```
+No module named 'omni.kit.usd'
+```
+
+```
+mv ~/.nvidia-omniverse ~/.nvidia-omniverse.bak mv ~/.cache/ov ~/.cache/ov.bak mv ~/.local/share/ov ~/.local/share/ov.bak
+```
+缺少extscore目录 ，Isaac Lab的kit配置文件期望这个目录存在 isaaclab.python.headless.rendering.kit:123
+
+扩展注册表无法访问 - 404错误表明扩展注册表URL已过期或不可用 isaaclab.python.rendering.kit:102
+
+即使Isaac Sim原生Python也无法导入 - 这说明问题不在于混合配置，而是Isaac Sim本身的扩展系统有问题
+
+```
+mkdir -p ${HOME}/isaac-sim/extscore
+```
+
+检查Isaac Sim自带的配置文件中的注册表URL
+
+```
+grep -r "ovextensionsprod" ${HOME}/isaac-sim/apps/
+```
+
+```
+rm -rf ${HOME}/.local/share/ov rm -rf ${HOME}/.cache/ov rm -rf ${HOME}/.nvidia-omniverse
+```
+
+**禁用注册表**，强制使用本地文件
+
+```
+./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py --kit_args "--/app/extensions/registryEnabled=false"
+```
+
+source serup_conda_python.sh 只是设置了环境变量，在lab环境的python仍然可以使用
+
+****！！！使用Isaac Sim原生启动来重新下载扩展
+
+```
+${HOME}/isaac-sim/isaac-sim.sh
+```
+
+**检查扩展缓存目录**
+
+```
+ls -la ${HOME}/isaac-sim/extscache/ ls -la ${HOME}/.local/share/ov/pkg/
+```
+
+参考： deepwikihttps://deepwiki.com/search/20250719-015629-4547ms-error-o_894c3884-a4e1-4509-8e3c-6be7bf98ae4c
+
+------------------------------------------------------------------------------
+
+排查
+```
+vulkan
+
+ls /etc/vulkan/icd.d
+
+ls /usr/share/vulkan/icd.d
+
+什么是vulkan： 是图形计算工具，被显卡驱动调用
+
+执行命令：
+
+vulkaninfo | grep -i "gpu name" -A 5
+
+可能原因：
+
+nvidia 驱动安装不完整，缺失 libglx_nvidia.so(nvidia 驱动的核心动态链接库，用于linux图形渲染，是vulkan 的驱动入口)
+
+libglx库位置
+
+ls -la /usr/lib/x86_64-linux-gnu/nvidia/current/libGLX_nvidia.so*
+
+ls -la /usr/lib/nvidia/libGLX_nvidia.so*
+
+检查libglx 位置
+
+find /usr -name "libGLX_nvidia.so*" 2>/dev/null
+
+重装libglx
+
+sudo apt install --reinstall libnvidia-gl-535
+
+解释vulkan, libglx_nvidia.so
+```
+
+
+### 05_tutorial 中的IK控制器排坑
+
+**问题描述**
+直接导入USD机械臂模型到仿真环境，给定目标位姿，机械臂末端甩动幅度较大，无法准确到达给定位姿。
+
+**解决方案**
+1. 物理引擎参数（提高帧率）
+如果机械臂动作幅度过大：**降低sim.dt系数**
+2. 刚度阻尼微调
+机械臂无力，下坠：增大**刚度**
+解决甩动：增大阻尼：
+3. diff_ik控制器：lambda_val
+控制器采用dls最小阻尼法分解逆雅可比矩阵；
+```python
+delta_joint_pos = (
+	jacobian_T @ torch.inverse(jacobian @ jacobian_T + lambda_matrix) @ delta_pose.unsqueeze(-1)
+)
+# Δq = J^T (JJ^T + λ²I)^(-1) Δx
+```
+
+4. **增大lambda_val**，即ik控制器中的阻尼系数
+机械臂在目标位置附近动作幅度过大
+```python
+diff_ik_cfg = DifferentialIKControllerCfg(command_type="pose", use_relative_mode=False, ik_method="dls", ik_params={"lambda_val": 1})
+```
+
+**参数配置**
+
+| 方法                  | stiffness | damping | sim.dt |     |
+| ------------------- | --------- | ------- | ------ | --- |
+| dls， lambda_val = 1 | 1200      | 170     | 0.0015 |     |
+| trans               |           |         | 0.001  |     |
+
+**isaac-sim 环境配置**
+Isaac-sim仿真中的机械臂关节
+![[images/note/image.png]]
+
+**air4a.py 配置文件中的机械臂关节**
+![[images/note/image-1.png]]
+
+**机器人实例化中的joint配置**
+```python
+robot_entity_cfg = SceneEntityCfg("robot", joint_names=[".*"], body_names=["air4a_link6"])
+robot_entity_cfg.resolve(scene)
+```
+   - robot_entity_cfg.joint_names: 存储的是你输入的查询模式 (例如 ['.*'])。
+   - robot_entity_cfg.joint_ids: 存储的是根据该模式查询到的结果索引 (例如 [0, 1, 2, 3, 4, 5])。
+   - scene['robot'].joint_names: 存储的是机器人模型自身的、完整的关节名称列表。
+## 其他实用操作
+
+### blender软件基本操作
+
+```
+g移动物体
+shift 移动视图
+查看尺寸，物体，n，dim——ension
+stl文件单位是mm， usd文件单位是m，所以需要scale 0.001n
+```
+### 搭建自己的 Nucleus 服务器 -- 后续安排
+1. 安装 Nucleus: 你可以在本地电脑或服务器上通过 NVIDIA Omniverse Launcher (https://www.nvidia.com/en-us/omniverse/download/) 或 Docker来安装 Nucleus 服务。
+2. 上传资产: 安装并运行 Nucleus 后， 得到localhost:8080 的访问地址。可以通过 Omniverse 的 UI 或 Python 脚本将你的 air4a.usd
+文件及其依赖项上传到你的 Nucleus 服务器上（例如，上传到路径 /Projects/MyRobots/air4a.usd）。
+3. 修改配置: 然后，你就可以在 air4a.py 中将 usd_path 修改为指向你的 Nucleus 服务器上的路径：
+```bash
+1 AIR4A_CFG = ArticulationCfg(
+2 spawn=UsdFileCfg(usd_path="omniverse://localhost/Projects/MyRobots/air4a.usd"),
+3 # ... 其他配置 ...
+4 )
+```
+
+### 在仿真环境中添加机械臂夹爪
+
+[参考链接](https://blog.csdn.net/gengmingqi/article/details/149803859)
+
+**注意：**
+删除夹爪的root，一个整体中只能有一个root
+**physical inspector 打开方法**
+
+![[images/note/image-9.png|562x326]]
+
+
+一个机械臂只能对应一个articulation root，要删除夹爪对应的驱动根号
+位于windows physical physics authoring tollbar
+**physical inspector查看**
+![[images/note/image-12.png|564x311]]
+![[images/note/image-10.png|560x317]]
+
+**为什么physical inspector中关节角在仿真运行的时候没有变化，**
+这个是一种控制方式，发送目标关节角。而且不能和enable_gpu_api调用时共同作用于机械臂，会有冲突
+
+**最终效果**
+![[images/note/image-11.png|868x500]]
+### 通过UI界面搭建自己的isaac sim环境
+
+isaac sim ui 界面装配，场景搭建
+https://blog.csdn.net/m0_56661101/article/details/139840541
+导入零件，可以使用stl文件吗
+
+**添加物理属性**
+如三个零件，add -> physics -> rigid body with collider reset
+**创建关节**
+stage -> ctrl; parent link, child lind -> create -> physics -> joint-> revolute joint
+创建并且命名，修改坐标系
+**创建关节树**
+Primbody并依次点击Add->Physics->Articulation Root
+指定articulation root 驱动根标准
+1. root joints parent prim
+2. root joint
+**创建关节驱动 joint drive**
+ctrl -> 2 joints -> add -> physics -> angular drive
+create camera
+
+关节根
+![[images/note/image-7.png]]
+
+参考资料
+isaac组装机器人
+https://zhaoxuhui.top/blog/2022/12/03/omniverse-and-isaac-sim-note3-build-robot-and-record-synthetic-data.html
+
+isaac sim 物理引擎操作
+https://blog.csdn.net/weixin_44572777/article/details/141421955
